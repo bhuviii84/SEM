@@ -304,6 +304,7 @@ def main() -> None:
     construct_rows, measurement = estimate_construct_scores(rows)
     regression = multiple_regression(construct_rows, PREDICTORS, OUTCOME)
     write_outputs(args.json, args.report, args.archive, args.data, len(rows), args.seed, measurement, regression)
+    write_outputs(args.json, args.report, len(rows), args.seed, measurement, regression)
 
     print(f"Wrote data to {args.data}")
     print(f"Wrote JSON results to {args.json}")
