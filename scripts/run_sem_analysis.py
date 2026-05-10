@@ -20,6 +20,7 @@ import json
 import math
 import random
 import statistics
+import zipfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
@@ -28,6 +29,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DATA = ROOT / "outputs" / "simulated_sem_data.csv"
 DEFAULT_JSON = ROOT / "outputs" / "sem_results.json"
 DEFAULT_REPORT = ROOT / "outputs" / "sem_report.md"
+DEFAULT_ARCHIVE = ROOT / "outputs" / "sem_outputs.zip"
 
 MODEL_SPEC = {
     "study_habits": ["study_plan", "focus_time", "assignment_pace"],
@@ -209,6 +211,8 @@ def estimate_construct_scores(rows: list[dict[str, float]]) -> tuple[list[dict[s
 def write_outputs(
     json_path: Path,
     report_path: Path,
+    archive_path: Path,
+    data_path: Path,
     sample_size: int,
     seed: int,
     measurement: dict[str, dict[str, float]],
@@ -272,12 +276,18 @@ def write_outputs(
     )
     report_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
+    archive_path.parent.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        for artifact in (data_path, json_path, report_path):
+            archive.write(artifact, arcname=artifact.name)
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run a reproducible SEM-style analysis in Python.")
     parser.add_argument("--data", type=Path, default=DEFAULT_DATA, help="CSV input/output path.")
     parser.add_argument("--json", type=Path, default=DEFAULT_JSON, help="JSON results path.")
     parser.add_argument("--report", type=Path, default=DEFAULT_REPORT, help="Markdown report path.")
+    parser.add_argument("--archive", type=Path, default=DEFAULT_ARCHIVE, help="ZIP archive path for downloadable outputs.")
     parser.add_argument("--sample-size", type=int, default=250, help="Simulated sample size when generating data.")
     parser.add_argument("--seed", type=int, default=20260510, help="Random seed for reproducibility.")
     parser.add_argument("--use-existing-data", action="store_true", help="Read --data instead of regenerating it.")
@@ -293,11 +303,13 @@ def main() -> None:
 
     construct_rows, measurement = estimate_construct_scores(rows)
     regression = multiple_regression(construct_rows, PREDICTORS, OUTCOME)
+    write_outputs(args.json, args.report, args.archive, args.data, len(rows), args.seed, measurement, regression)
     write_outputs(args.json, args.report, len(rows), args.seed, measurement, regression)
 
     print(f"Wrote data to {args.data}")
     print(f"Wrote JSON results to {args.json}")
     print(f"Wrote report to {args.report}")
+    print(f"Wrote downloadable archive to {args.archive}")
     print(f"R-squared: {regression.r_squared:.3f}")
     for predictor, coefficient in regression.coefficients.items():
         print(f"{predictor} -> {OUTCOME}: {coefficient:.3f}")

@@ -12,6 +12,7 @@ academic_performance ~ study_habits + sleep_quality + academic_stress
 - `outputs/simulated_sem_data.csv` is the generated example dataset.
 - `outputs/sem_results.json` contains machine-readable SEM results.
 - `outputs/sem_report.md` contains a readable summary of the measurement and structural model.
+- `outputs/sem_outputs.zip` is generated locally when you run the analysis and contains the CSV, JSON, and Markdown outputs. This ZIP is intentionally not committed because PR systems often do not support binary file review.
 
 ## Run the analysis
 
@@ -23,6 +24,16 @@ To analyze an existing CSV with the same indicator columns, pass `--use-existing
 
 ```bash
 python scripts/run_sem_analysis.py --data outputs/simulated_sem_data.csv --use-existing-data
+```
+
+## Download the output
+
+After running the analysis, download or copy the locally generated `outputs/sem_outputs.zip` to get all outputs in one file. The ZIP is ignored by git so pull requests stay text-only and reviewable. If you only need a specific artifact, use `outputs/sem_report.md` for the readable report, `outputs/sem_results.json` for machine-readable results, or `outputs/simulated_sem_data.csv` for the generated dataset.
+
+You can also choose a different ZIP location:
+
+```bash
+python scripts/run_sem_analysis.py --archive outputs/my_sem_outputs.zip
 ```
 
 ## Notes
