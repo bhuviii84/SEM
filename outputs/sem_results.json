@@ -1,0 +1,41 @@
+{
+  "model": "academic_performance ~ study_habits + sleep_quality + academic_stress",
+  "sample_size": 250,
+  "seed": 20260510,
+  "measurement": {
+    "study_habits": {
+      "cronbach_alpha": 0.8329339054817174,
+      "loading_study_plan": 0.866036583473571,
+      "loading_focus_time": 0.8639068951456198,
+      "loading_assignment_pace": 0.8675841525306155
+    },
+    "sleep_quality": {
+      "cronbach_alpha": 0.8744705819232427,
+      "loading_sleep_duration": 0.8894121515540978,
+      "loading_sleep_consistency": 0.8916744619020892,
+      "loading_restedness": 0.9012188175570804
+    },
+    "academic_stress": {
+      "cronbach_alpha": 0.9053261854774473,
+      "loading_deadline_pressure": 0.9234184351473703,
+      "loading_test_anxiety": 0.9199414713270292,
+      "loading_overload": 0.9083880916877088
+    },
+    "academic_performance": {
+      "cronbach_alpha": 0.9345460671707622,
+      "loading_gpa_proxy": 0.9445403280908009,
+      "loading_exam_score": 0.9350321756222453,
+      "loading_project_score": 0.9414526372433556
+    }
+  },
+  "structural_model": {
+    "intercept": 1.3911564819493334e-17,
+    "standardized_paths": {
+      "study_habits": 0.3397086487002309,
+      "sleep_quality": 0.15755440787898833,
+      "academic_stress": -0.4526883763429481
+    },
+    "r_squared": 0.5531195757234874,
+    "rmse": 0.6671528329996108
+  }
+}
